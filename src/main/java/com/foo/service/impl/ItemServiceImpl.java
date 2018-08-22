@@ -46,6 +46,12 @@ public class ItemServiceImpl implements ItemService{
 		while(fromIndex != toIndex){
 			// query sku info each 20 skus
         	List<SkuInfoDTO> skuList = ServiceBeanFactory.getInstance().getServiceBean(SkuService.class).findByIds(skuIds.subList(fromIndex, toIndex));
+        	// calculate next index.
+    		fromIndex = toIndex;
+    		toIndex = minInteger(fromIndex + number, skuIds.size());
+    		if(skuList == null) {
+    			continue;
+    		}
         	// group sku by sku key. 
     		Map<String, List<SkuInfoDTO>> skuListByGroup = skuList.stream().collect(Collectors.groupingBy(skuKeyFunc));
     		// merge sku
@@ -64,9 +70,6 @@ public class ItemServiceImpl implements ItemService{
     				itemBiFunc.apply(skui$.next(), itemMap.get(key));
     			}
     		});
-    		// calculate next index.
-    		fromIndex = toIndex;
-    		toIndex = minInteger(fromIndex + number, skuIds.size());
         }
 		// set price range for item
 		itemMap.values().stream().forEach(item -> {

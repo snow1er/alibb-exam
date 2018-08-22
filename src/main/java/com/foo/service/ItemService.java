@@ -19,7 +19,7 @@ public interface ItemService {
 	 */
 	default ItemInfoDTO getBySkuId(String skuId) {
 		List<ItemInfoDTO> items = getBySkuIds(Arrays.asList(new String[] {skuId}));
-		return items == null ? null : items.get(0);
+		return items == null || items.isEmpty() ? null : items.get(0);
 	};
 	
 	/**
